@@ -4,14 +4,13 @@ import time
 from urllib.parse import urljoin
 import csv
 from datetime import datetime
-from google.generativeai import GenerativeModel
 from google import genai
+import json
 
 # Configure Gemini
 genai_api_key = "your api key"  
 client = genai.Client(api_key=genai_api_key)
 
-# Add your website links here (either with or without https://)
 WEBSITE_LINKS = [
     "https://www.apple.com/leadership/",
     "https://www.samsung.com/in/about-us/company-info/",
@@ -33,7 +32,7 @@ def fetch_clean_text(url):
         soup = BeautifulSoup(response.text, "html.parser")
 
         # Remove unwanted elements
-        for element in soup(["script", "style", "img", "a", "nav", "footer", "header", "iframe", "form"]):
+        for element in soup(["script", "style", "img", "nav", "footer", "header", "iframe", "form"]):
             element.decompose()
 
         # Get clean text
@@ -62,7 +61,6 @@ def find_relevant_links(soup, base_url):
 def extract_company_data(base_url):
     print(f"\nProcessing: {base_url}")
     
-    # Extract company name from URL
     domain = base_url.split('//')[-1].split('/')[0]
     company_name = '.'.join(domain.split('.')[-2:]).capitalize()
     
@@ -91,7 +89,7 @@ def extract_company_data(base_url):
         relevant_links = find_relevant_links(soup, base_url)
         
         all_text = [main_text]
-        for link in relevant_links[:3]:  # Limit to 3 subpages
+        for link in relevant_links[:5]:  # Limit to 5 subpages
             time.sleep(1)
             page_text = fetch_clean_text(link)
             if page_text:
@@ -131,7 +129,6 @@ def extract_company_data(base_url):
         if response.text:
             # Try to parse the response as JSON
             try:
-                import json
                 # Clean the response to extract just the JSON part
                 json_str = response.text.strip()
                 if json_str.startswith('```json'):
