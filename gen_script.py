@@ -8,7 +8,7 @@ from google.generativeai import GenerativeModel
 from google import genai
 
 # Configure Gemini
-genai_api_key = "AIzaSyDa3giOkK9xlwIiP7h0lsuT80ekPiuX7rc"  
+genai_api_key = "your api key"  
 client = genai.Client(api_key=genai_api_key)
 
 # Add your website links here (either with or without https://)
